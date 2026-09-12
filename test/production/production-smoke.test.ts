@@ -1,4 +1,3 @@
-process.env.TLS_CERT_PATH = 'certs/server.crt'; process.env.TLS_KEY_PATH = 'certs/server.key';
 import assert from 'node:assert/strict';
 import net from 'node:net';
 import { after, before, describe, it } from 'node:test';

@@ -1,4 +1,3 @@
-process.env.TLS_CERT_PATH = 'certs/server.crt'; process.env.TLS_KEY_PATH = 'certs/server.key';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

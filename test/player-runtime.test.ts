@@ -1,4 +1,3 @@
-process.env.TLS_CERT_PATH = 'certs/server.crt'; process.env.TLS_KEY_PATH = 'certs/server.key';
 import assert from 'node:assert/strict';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import { ApplicationInstance, bootstrapApplication } from '../src/bootstrap.js';
