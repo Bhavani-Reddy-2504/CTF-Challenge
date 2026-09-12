@@ -68,10 +68,8 @@ export async function loadOrGenerateTlsCert(environment: string): Promise<TlsCre
 
   if (environment === 'production') {
     if (!certPath || !keyPath) {
-      throw new Error(
-        'TLS_CERT_PATH and TLS_KEY_PATH environment variables must be set in production mode. ' +
-          "Obtain a certificate from Let's Encrypt (certbot) or your certificate authority."
-      );
+      console.warn('[WARNING] TLS_CERT_PATH or TLS_KEY_PATH not set in production. Falling back to plain HTTP. Ensure you are running behind a reverse proxy that terminates TLS (like Render, AWS ALB, etc).');
+      return null as any;
     }
     const cert = fs.readFileSync(certPath, 'utf-8');
     const key = fs.readFileSync(keyPath, 'utf-8');

@@ -84,7 +84,7 @@ export async function bootstrapApplication(configOverrides: ConfigInput = {}): P
 
   // 6. Load or generate TLS credentials (skipped in test — tests use plain HTTP)
   let tlsCredentials: Awaited<ReturnType<typeof loadOrGenerateTlsCert>> | undefined;
-  if (config.environment !== 'test') {
+  if (process.env.NODE_ENV !== 'test' && config.environment !== 'test') {
     logger.info('Loading TLS credentials...', undefined);
     tlsCredentials = await loadOrGenerateTlsCert(config.environment);
     logger.info(
