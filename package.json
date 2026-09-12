@@ -20,7 +20,7 @@
   "keywords": ["ctf", "cloud-security", "zero-trust", "simulation"],
   "author": "Antigravity Challenge Architect",
   "license": "UNLICENSED",
-  "devDependencies": {
+  "dependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
