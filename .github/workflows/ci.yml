@@ -1,0 +1,41 @@
+name: StrataCore CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build production bundle
+      run: npm run build
+      
+    - name: Run all challenge tests
+      run: npm test
+      env:
+        # Dummy flag injected for test suite
+        ENCLAVE_FLAG: "MOCK_FLAG{CI_TEST_ENVIRONMENT_FLAG_ONLY}"
+        ENCLAVE_SECRET: "hyperion-enclave-fabric-root-secret-889f-2026"
+        
+    - name: Audit Player Release Bundle
+      run: |
+        npm run package:player
+        npm run audit:player-release

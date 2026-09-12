@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="StrataCore: The Hyperion Enclave Fabric - Secure Zero-Trust Forensic Investigation Runtime">
+  <title>StrataCore // Hyperion Enclave Fabric</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body class="theme-dark">
+  <div id="app" class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-glyph" aria-hidden="true">▲</div>
+        <div class="brand-text">
+          <h1 class="brand-title">STRATACORE</h1>
+          <span class="brand-subtitle">THE HYPERION ENCLAVE FABRIC // FORENSIC RUNTIME</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <div class="status-indicator">
+          <span class="status-dot" id="sessionDot" aria-hidden="true"></span>
+          <span class="status-label" id="sessionStatusLabel">INITIALIZING</span>
+        </div>
+        <div class="header-actions">
+          <button id="btnInitSession" class="btn btn-secondary btn-sm" type="button">NEW SESSION</button>
+          <button id="btnTermSession" class="btn btn-danger btn-sm" type="button">TERMINATE</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="app-body">
+      <!-- Sidebar: Discovered Evidence Inventory -->
+      <aside class="app-sidebar" aria-label="Discovered Evidence Inventory">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row">
+            <h2 class="sidebar-title">DISCOVERED EVIDENCE</h2>
+            <span class="badge" id="evidenceCountBadge">0</span>
+          </div>
+          <p class="sidebar-description">Server-confirmed operational artifacts for the active session.</p>
+        </div>
+        <div class="sidebar-content">
+          <ul id="evidenceList" class="evidence-list" role="list">
+            <!-- Dynamically populated from server responses -->
+          </ul>
+          <div id="emptyEvidencePlaceholder" class="empty-placeholder">
+            <div class="empty-icon" aria-hidden="true">◇</div>
+            <p class="empty-title">NO ARTIFACTS DISCOVERED</p>
+            <p class="empty-text">Dispatch symbolic routes via the exploration bar to query operational evidence from the server enclave.</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Primary Workspace -->
+      <main class="app-main" aria-label="Investigation Workspace">
+        <!-- Symbolic Route Exploration Bar -->
+        <section class="section-card exploration-card" aria-labelledby="explorationTitle">
+          <div class="section-header">
+            <h2 id="explorationTitle" class="section-title">SYMBOLIC ROUTE EXPLORATION</h2>
+            <span class="section-tag">CONTROLLED DISPATCH</span>
+          </div>
+          <form id="routeForm" class="route-form">
+            <div class="route-input-wrapper">
+              <span class="route-prefix" aria-hidden="true">sim://</span>
+              <input
+                type="text"
+                id="routeInput"
+                class="route-input"
+                name="route"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="namespace/path"
+                required
+                aria-label="Symbolic Route URI"
+              >
+            </div>
+            <div class="route-form-actions">
+              <button type="button" id="btnClearRoute" class="btn btn-secondary btn-sm">CLEAR</button>
+              <button type="submit" id="btnDispatch" class="btn btn-primary">DISPATCH</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Evidence Detail Viewer -->
+        <section class="section-card viewer-card" aria-labelledby="viewerTitle">
+          <div class="section-header">
+            <div class="viewer-title-row">
+              <h2 id="viewerTitle" class="section-title">EVIDENCE RECORD</h2>
+              <span id="viewerIdBadge" class="badge badge-primary hidden"></span>
+            </div>
+            <div class="viewer-actions">
+              <button type="button" id="btnToggleRawJson" class="btn btn-secondary btn-sm hidden">RAW JSON</button>
+            </div>
+          </div>
+
+          <div id="viewerEmptyState" class="viewer-empty">
+            <div class="empty-icon" aria-hidden="true">◈</div>
+            <p class="empty-title">AWAITING INVESTIGATION QUERY</p>
+            <p class="empty-text">Enter a symbolic route or select a discovered artifact from the sidebar to inspect verified enclave evidence.</p>
+          </div>
+
+          <div id="viewerContentArea" class="viewer-content hidden">
+            <!-- Metadata summary bar -->
+            <div class="metadata-grid">
+              <div class="meta-item">
+                <span class="meta-label">SOURCE DOMAIN</span>
+                <span id="metaSource" class="meta-value">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">CLASSIFICATION</span>
+                <span id="metaClassification" class="meta-value">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">VERSION</span>
+                <span id="metaVersion" class="meta-value">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">STATUS</span>
+                <span id="metaStatus" class="meta-value">-</span>
+              </div>
+            </div>
+
+            <!-- Correlation references -->
+            <div id="correlationBox" class="correlation-box hidden">
+              <span class="correlation-label">CORRELATIONS:</span>
+              <div id="correlationChips" class="correlation-chips"></div>
+            </div>
+
+            <!-- Structured content viewer -->
+            <div id="structuredViewer" class="structured-viewer">
+              <div id="contentTree" class="content-tree"></div>
+            </div>
+
+            <!-- Raw JSON inspector -->
+            <pre id="rawJsonViewer" class="raw-json-viewer hidden"><code></code></pre>
+          </div>
+        </section>
+
+        <!-- Final Interpretation Submission Boundary -->
+        <section class="section-card submission-card" aria-labelledby="submissionTitle">
+          <div class="section-header">
+            <h2 id="submissionTitle" class="section-title">CONTROLLED FINAL EVALUATION</h2>
+            <span class="section-tag">SERVER-SIDE VERIFICATION BOUNDARY</span>
+          </div>
+          <p class="submission-instruction">
+            Once multi-domain convergence and evaluation readiness are established on the server, submit a candidate final interpretation for server-side evaluation.
+          </p>
+          <form id="submissionForm" class="submission-form">
+            <div class="submission-input-wrapper">
+              <label for="submissionInput" class="sr-only">Candidate Final Interpretation</label>
+              <textarea
+                id="submissionInput"
+                class="submission-textarea"
+                rows="2"
+                placeholder="Enter candidate multi-domain synthesis interpretation..."
+                spellcheck="false"
+                required
+              ></textarea>
+            </div>
+            <div class="submission-actions">
+              <button type="submit" id="btnSubmitEval" class="btn btn-primary">SUBMIT FOR EVALUATION</button>
+            </div>
+          </form>
+          <div id="submissionOutcomeBox" class="submission-outcome hidden" role="status" aria-live="polite">
+            <div class="outcome-header">
+              <span class="outcome-title">EVALUATION OUTCOME</span>
+              <span id="outcomeStatusBadge" class="badge"></span>
+            </div>
+            <p id="outcomeMessage" class="outcome-message"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Runtime Console / Controlled System Log -->
+    <footer class="app-footer">
+      <div class="console-panel">
+        <div class="console-header">
+          <div class="console-title-row">
+            <span class="console-indicator" aria-hidden="true">■</span>
+            <h3 class="console-title">OPERATIONAL RUNTIME CONSOLE</h3>
+          </div>
+          <button id="btnClearConsole" class="btn btn-secondary btn-xs" type="button">CLEAR</button>
+        </div>
+        <div id="consoleLogs" class="console-logs" role="log" aria-live="polite">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

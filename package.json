@@ -1,0 +1,28 @@
+{
+  "name": "stratacore-hyperion",
+  "version": "1.0.0",
+  "description": "StrataCore: The Hyperion Enclave Fabric - Foundation Engine",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/index.js",
+    "start:dev": "tsx --env-file=.env src/index.ts",
+    "test": "tsx --test test/*.test.ts test/security/*.test.ts test/release/*.test.ts test/production/*.test.ts",
+    "package:player": "npm run build && node scripts/package-player.js",
+    "package:zip": "npm run package:player && powershell -Command \"Compress-Archive -Path release\\* -DestinationPath stratacore-player-release.zip -Force\"",
+    "audit:player-release": "node scripts/audit-player-release.js",
+    "verify:production": "node scripts/verify-production.js",
+    "validate:release": "node scripts/validate-release.js",
+    "release:check": "npm run build && npm run package:player && npm run validate:release",
+    "production:check": "node scripts/production-check.js"
+  },
+  "keywords": ["ctf", "cloud-security", "zero-trust", "simulation"],
+  "author": "Antigravity Challenge Architect",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
